@@ -1,6 +1,7 @@
 const { json } = require("express");
 const Stud = require("../models/studModel");
 const Prof = require("../models/profModel");
+const dbEventEmitter = require("../dbEventEmitter");
 
 exports.joinQueue1 = async (req, res, next) => {
   try {
@@ -52,6 +53,7 @@ exports.joinQueue2 = async (req, res) => {
     );
 
     if (join) {
+      dbEventEmitter.emit("queueChanged", join.queue);
       res.status(200).json({
         status: "success",
         stud,
@@ -91,6 +93,7 @@ exports.leaveQueue = async (req, res) => {
       const del = await Stud.findByIdAndDelete(stud.id);
 
       if (updateQueue && del) {
+        dbEventEmitter.emit("queueChanged", updateQueue.queue);
         res.status(200).json({
           status: "success",
           prof,

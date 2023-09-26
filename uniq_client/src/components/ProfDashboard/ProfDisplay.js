@@ -28,6 +28,28 @@ const ProfDisplay = () => {
   const [queue, setQueue] = useState(
     JSON.parse(sessionStorage.getItem("queue")) || []
   );
+  useEffect(() => {
+    let eventSource = new EventSource("http://localhost:3001/events");
+
+    eventSource.onmessage = (event) => {
+      const updatedQueue = JSON.parse(event.data);
+      setQueue(updatedQueue);
+    };
+
+    eventSource.onerror = (error) => {
+      console.error("EventSource failed:", error);
+      eventSource.close();
+
+      // You can implement a reconnection strategy here if needed
+      // For example, you might want to try reconnecting after a delay
+      setTimeout(() => {
+        eventSource = new EventSource("http://localhost:3001/events");
+      }, 5000); // Try to reconnect every 5 seconds
+    };
+
+    // Cleanup the connection when the component is unmounted
+    return () => eventSource.close();
+  }, []);
 
   const handleAccess = async (e) => {
     e.preventDefault();

@@ -2,6 +2,8 @@ const { json } = require("express");
 const Prof = require("../models/profModel");
 const Stud = require("../models/studModel");
 
+const dbEventEmitter = require("../dbEventEmitter");
+
 exports.getProf = async (req, res) => {
   try {
     const prof = await Prof.findOne({ profAccessCode: req.body.accessCode });
@@ -87,6 +89,7 @@ exports.dequeue = async (req, res) => {
         { new: true }
       );
       if (updateQueue && delStud) {
+        dbEventEmitter.emit("queueChanged", updateQueue.queue);
         res.status(200).json({
           status: "success",
           prof,
