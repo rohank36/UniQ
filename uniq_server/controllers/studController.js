@@ -117,3 +117,26 @@ exports.leaveQueue = async (req, res) => {
     });
   }
 };
+
+exports.getStud = async (req, res) => {
+  try {
+    const studID = req.body.studID;
+    const stud = await Stud.findById(studID);
+    if (stud) {
+      res.status(200).json({
+        status: "success",
+        stud,
+      });
+    } else {
+      res.status(404).json({
+        status: "error",
+        message: "Stud not found",
+      });
+    }
+  } catch (error) {
+    res.status(500).json({
+      status: "error",
+      message: "Server error",
+    });
+  }
+};

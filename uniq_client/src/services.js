@@ -98,3 +98,27 @@ export async function leaveQueue(studName) {
     throw new Error("Error in Axios Query", e);
   }
 }
+
+export async function getStud(studID) {
+  try {
+    const response = await axios.post(
+      `${API_URL}/studs/getStud`,
+      {
+        studID: studID,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    //Special handling here
+    if (response.status === 200 && response.data.status === "success") {
+      return response.data.stud.name;
+    } else {
+      throw new Error("Could not find student");
+    }
+  } catch (e) {
+    throw new Error("Error in Axios Query", e);
+  }
+}

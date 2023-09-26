@@ -114,20 +114,3 @@ exports.dequeue = async (req, res) => {
     });
   }
 };
-
-/*
-exports.getStudName = async(req,res){
-  try{
-    const accessCode = req.body.accessCode;
-    const name = req.body.studName;
-    const queue = await Prof.findOne({profAccessCode : accessCode});
-
-  }catch(e){
-    res.status(500).json({
-      status: "error",
-      message: "Server error",
-      e,
-    });
-  }
-}
-*/

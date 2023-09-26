@@ -9,12 +9,7 @@ const LeaveQBtn = ({ propName }) => {
     try {
       const res = await leaveQueue(propName);
       if (res.status === 200 && res.data.status === "success") {
-        sessionStorage.setItem("courseNameStud", "");
-        sessionStorage.setItem("courseCodeStud", "");
-        sessionStorage.setItem("studentName", "");
-        sessionStorage.setItem("joinCodeStud", "");
-        sessionStorage.setItem("validJoinCode", false);
-        sessionStorage.setItem("studentID", "");
+        sessionStorage.clear();
         navigate("/");
       } else {
         alert(res.data.message);
