@@ -1,11 +1,28 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { leaveQueue } from "../../services";
 
-const LeaveQBtn = () => {
+const LeaveQBtn = ({ propName }) => {
   const navigate = useNavigate();
-  const handleClick = () => {
-    //leave q in db
-    navigate("/");
+  const handleClick = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await leaveQueue(propName);
+      if (res.status === 200 && res.data.status === "success") {
+        sessionStorage.setItem("courseNameStud", "");
+        sessionStorage.setItem("courseCodeStud", "");
+        sessionStorage.setItem("studentName", "");
+        sessionStorage.setItem("joinCodeStud", "");
+        sessionStorage.setItem("validJoinCode", false);
+        sessionStorage.setItem("studentID", "");
+        navigate("/");
+      } else {
+        alert(res.data.message);
+      }
+    } catch (error) {
+      console.error("Error in handleAccess", error);
+      alert("An error occured. Please try again.");
+    }
   };
   return (
     <button

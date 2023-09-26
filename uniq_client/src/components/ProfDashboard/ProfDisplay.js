@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { getProf, startOH } from "../../services";
+import { getProf, startOH, dequeue } from "../../services";
 import QueueDisplay from "./QueueDisplay";
 
 const ProfDisplay = () => {
@@ -40,8 +40,6 @@ const ProfDisplay = () => {
       console.error("EventSource failed:", error);
       eventSource.close();
 
-      // You can implement a reconnection strategy here if needed
-      // For example, you might want to try reconnecting after a delay
       setTimeout(() => {
         eventSource = new EventSource("http://localhost:3001/events");
       }, 5000); // Try to reconnect every 5 seconds
@@ -81,6 +79,18 @@ const ProfDisplay = () => {
     }
   };
 
+  const handleDequeue = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await dequeue(profAccessCode);
+      if (res.status != 200 || res.data.status != "success") {
+        alert("Error with dequeue");
+      }
+    } catch (error) {
+      console.error("Error in handleDequeue", error);
+      alert("An error occured. Please try again.");
+    }
+  };
   const handleStart = async (e) => {
     e.preventDefault();
     try {
@@ -138,7 +148,7 @@ const ProfDisplay = () => {
               <h1>Join Code: {joinCode}</h1>
             </div>
             <div className="flex flex-row">
-              <button>Dequeue Student</button>
+              <button onClick={handleDequeue}>Dequeue Student</button>
               <h1>Queue Count: {queue.length}</h1>
             </div>
             <div>

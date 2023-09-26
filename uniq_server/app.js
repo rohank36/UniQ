@@ -14,14 +14,13 @@ app.use(express.json());
 //SSE Setup
 let clients = [];
 app.get("/events", (req, res) => {
-  console.log("Received request for /events");
   res.setHeader("Content-Type", "text/event-stream");
   res.setHeader("Cache-Control", "no-cache");
   res.setHeader("Connection", "keep-alive");
   res.flushHeaders();
 
   const heartbeatInterval = setInterval(() => {
-    res.write(":heartbeat\n\n"); // a comment message
+    res.write(":heartbeat\n\n");
   }, 60000);
 
   clients.push(res);
@@ -31,9 +30,7 @@ app.get("/events", (req, res) => {
   });
 });
 
-// This is a placeholder. You'd typically have some event or watcher on your database.
-// For demonstration purposes, let's assume you have an event emitter for database changes.
-const dbEventEmitter = require("./dbEventEmitter"); // This is just a placeholder. You'd need to implement this.
+const dbEventEmitter = require("./dbEventEmitter");
 
 dbEventEmitter.on("queueChanged", (updatedQueue) => {
   clients.forEach((client) =>
