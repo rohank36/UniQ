@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
 import Header from "../Landing/Header";
 import LeaveQBtn from "./LeaveQBtn";
-import { joinQueue } from "../../services";
+import { useNavigate } from "react-router-dom";
+import { joinQueue, leaveQueue } from "../../services";
 
 const StudDisplay = () => {
+  const navigate = useNavigate();
   const [courseNameStud, setCourseNameStud] = useState(
     sessionStorage.getItem("courseNameStud") || ""
   );
@@ -27,13 +29,6 @@ const StudDisplay = () => {
     sessionStorage.getItem("studentID") || ""
   );
   const [queue, setNewQueue] = useState([]);
-
-  useEffect(() => {
-    const index = queue.findIndex((id) => id === studentID);
-    const placeInQueue = index + 1;
-    setPlace(placeInQueue);
-    sessionStorage.setItem("place", placeInQueue);
-  }, [queue]);
 
   useEffect(() => {
     let eventSource = new EventSource("http://localhost:3001/events");
@@ -84,6 +79,23 @@ const StudDisplay = () => {
     }
   };
 
+  useEffect(() => {
+    const index = queue.findIndex((id) => id === studentID);
+    const placeInQueue = index + 1;
+
+    if (studentID && placeInQueue <= 0) {
+      const userConfirmed = window.confirm(
+        "It is your turn now! Click OK to continue."
+      );
+      if (userConfirmed) {
+        sessionStorage.clear();
+        navigate("/");
+      }
+    }
+    setPlace(placeInQueue);
+    sessionStorage.setItem("place", placeInQueue);
+  }, [queue]);
+
   return (
     <div className="bg-green-300 h-screen text-white">
       <div className="flex flex-row">
@@ -125,7 +137,7 @@ const StudDisplay = () => {
       </div>
       <div>
         {validJoinCode && (
-          <div>
+          <div className="flex flex-col justify-center items-center mt-28 font-bold text-4xl">
             <h1>{studentName}</h1>
             <h1 className="mt-8">
               {courseCodeStud}: {courseNameStud}

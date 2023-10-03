@@ -136,10 +136,10 @@ const ProfDisplay = () => {
       </div>
       <div>
         {validAccessCode && (
-          <div className="flex flex-col">
-            <h1>Welcome Professor {lastName}</h1>
-            <div className="flex flex-row">
-              <button onClick={handleStart}>
+          <div className="flex flex-col justify-center items-center mt-16 font-bold text-4xl">
+            <h1 className="text-6xl">Welcome Professor {lastName}</h1>
+            <div className="flex flex-row space-x-24 mt-10">
+              <button onClick={handleStart} className=" hover:text-green-500">
                 {started ? "Stop" : "Start"} Office Hours
               </button>
               <h1>
@@ -147,11 +147,13 @@ const ProfDisplay = () => {
               </h1>
               <h1>Join Code: {joinCode}</h1>
             </div>
-            <div className="flex flex-row">
-              <button onClick={handleDequeue}>Dequeue Student</button>
+            <div className="flex flex-row space-x-20 mt-10">
+              <button onClick={handleDequeue} className=" hover:text-green-500">
+                Dequeue Student
+              </button>
               <h1>Queue Count: {queue.length}</h1>
             </div>
-            <div>
+            <div className="mt-16">
               <QueueDisplay propQueue={queue} />
             </div>
           </div>
